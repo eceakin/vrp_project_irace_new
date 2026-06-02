@@ -1,0 +1,9 @@
+# =============================================================================
+#  instances.txt — kullanilacak problem instancelari
+#
+#  Her satir bir instance dosyasidir.
+#  5000 run butcesi tek instance uzerinde harcanacak.
+#  irace her degerlendirmede bu dosyayi target-runner'a instance olarak gecer.
+# =============================================================================
+
+data/vrpnc1.txt

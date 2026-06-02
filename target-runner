@@ -1,0 +1,64 @@
+#!/bin/bash
+# =============================================================================
+#  target-runner — irace'nin her konfigürasyon icin cagirdigi script
+#
+#  irace bu scripti su sekilde cagirir:
+#    ./target-runner <config_id> <instance_id> <seed> <instance_path> <param1> <deger1> ...
+#
+#  Argümanlar:
+#    $1  = konfigürasyon ID     (irace iç numarası, kullanılmıyor)
+#    $2  = instance ID          (irace iç numarası, kullanılmıyor)
+#    $3  = seed                 (irace'nin atadığı rastgele tohum)
+#    $4  = instance dosyası     (instances.txt'den gelen yol, örn: data/vrpnc1.txt)
+#    $5+ = parametre çiftleri   (--pop 40 --no-improve 3000 ...)
+#
+#  Cikti:
+#    Standart cikisina (stdout) yalnizca TEK bir sayi yazdirir.
+#    Kucuk deger = daha iyi cozum (irace minimize eder).
+#    vrp_ga zaten bunu yapar:
+#      - Feasible cozum varsa: en iyi rota toplam mesafesi
+#      - Feasible cozum yoksa: mesafe + 1e6 * unfitness (penalti)
+#
+#  Hata durumu:
+#    Herhangi bir hata olursa "Inf" yazdirilir; irace bu degeri gec cikti sayar.
+# =============================================================================
+
+# --- Argümanlari al -------------------------------------------------------
+CONFIG_ID="$1"   # kullanilmiyor
+INSTANCE_ID="$2" # kullanilmiyor
+SEED="$3"
+INSTANCE="$4"
+shift 4          # geri kalanlar parametre cifltleri: --pop 40 --mut-prob 0.7 ...
+
+# --- Calistirici yolunu belirle ------------------------------------------
+# Bu script vrp_project_irace/ dizininden calistirilmalidir.
+# vrp_ga binary'si ayni dizinde olmalidir.
+BINARY="./vrp_ga"
+
+if [ ! -x "$BINARY" ]; then
+    echo "HATA: $BINARY bulunamadi veya calistirilamaz." >&2
+    echo "Inf"
+    exit 1
+fi
+
+if [ ! -f "$INSTANCE" ]; then
+    echo "HATA: Instance dosyasi bulunamadi: $INSTANCE" >&2
+    echo "Inf"
+    exit 1
+fi
+
+# --- vrp_ga'yi irace modunda calistir ------------------------------------
+# Cikis: tek bir sayi (mesafe veya penaltili mesafe)
+OUTPUT=$("$BINARY" --irace "$INSTANCE_ID" "$SEED" "$INSTANCE" "$@" 2>/dev/null)
+EXIT_CODE=$?
+
+# --- Sonucu dogrula ve yazdir --------------------------------------------
+if [ $EXIT_CODE -ne 0 ] || [ -z "$OUTPUT" ]; then
+    # Program hata verdi ya da hicbir sey yazmadi → irace'ye gecersiz say
+    echo "Inf"
+    exit 1
+fi
+
+# Ciktiyi dogrudan irace'ye ilet (tek sayi olmalidir)
+echo "$OUTPUT"
+exit 0

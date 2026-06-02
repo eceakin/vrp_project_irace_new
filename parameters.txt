@@ -1,0 +1,31 @@
+# =============================================================================
+#  parameters.txt — irace parametre tanimi
+#
+#  Sutunlar:
+#    <isim>   <flag>             <tip>  <aralik/degerler>
+#
+#  Tipler:
+#    i = integer (tam sayi)
+#    r = real    (gercek sayi)
+#    c = categorical (sinif)
+#
+#  Kullanim: ./vrp_ga --irace <id> <seed> <dosya> [flag deger ...]
+# =============================================================================
+
+# Populasyon buyuklugu — kucuk deger hiz, buyuk deger kesfetme saglar
+pop              "--pop "             i  (10, 100)
+
+# Erken durdurma: ardisik kac nesil iyilesme olmayinca durulsun
+no_improve       "--no-improve "      i  (500, 10000)
+
+# Or-opt mutasyon olasiligi [0, 1]
+mut_prob         "--mut-prob "        r  (0.1, 1.0)
+
+# Crossover tipi: 0 = 2-point, 1 = optimised (OX)
+crossover        "--crossover "       c  (0, 1)
+
+# Lambda-interchange yerel arama periyodu (her kac nesilin bir)
+local_interval   "--local-interval "  i  (500, 5000)
+
+# 2-opt maksimum iterasyon sayisi (her decode cagrisinda)
+two_opt_iter     "--two-opt-iter "    i  (1, 10)

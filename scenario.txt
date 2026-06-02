@@ -1,0 +1,9 @@
+maxExperiments = 1000
+trainInstancesFile = "instances.txt"
+trainInstancesDir = ""
+targetRunner = "vrp_ga.exe"
+targetCmdline = "--irace {instanceID} {seed} {instance} {targetRunnerArgs}"
+logFile = "irace.log"
+debugLevel = 1
+seed = 42
+parallel = 1
